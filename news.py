@@ -34,16 +34,20 @@ def get_title_of_random_news():
       "page": "1"
     }
     log.info(f"Send request to get usually news.\nParams: {params}\n\n")
-    res = requests.get(url=newsApi_url+'everything', params=urllib.parse.urlencode(params))
-    # Counting news in response and choosing random news
-    countOfNews = len(res.json().get('articles'))
-    numberNews = random.randint(0, countOfNews-1)
-    # Ejecting url and title of random news
-    urlNews = res.json().get('articles')[numberNews]['url']
-    titleNewsRu = res.json().get('articles')[numberNews]['title']
-    print(urlNews, titleNewsRu)
-    log.info(f"ARTICLES: {res.json().get('articles')}\n\n Chosen random title: {titleNewsRu}\n urlNews:{urlNews}")
-    return titleNewsRu
+    try:
+        res = requests.get(url=newsApi_url+'everything', params=urllib.parse.urlencode(params))
+        # Counting news in response and choosing random news
+        countOfNews = len(res.json().get('articles'))
+        numberNews = random.randint(0, countOfNews-1)
+        # Ejecting url and title of random news
+        urlNews = res.json().get('articles')[numberNews]['url']
+        titleNewsRu = res.json().get('articles')[numberNews]['title']
+        print(urlNews, titleNewsRu)
+        log.info(f"ARTICLES: {res.json().get('articles')}\n\n Chosen random title: {titleNewsRu}\n urlNews:{urlNews}")
+        return titleNewsRu
+    except Exception as e:
+        log.error(f"FAIL {e}")
+        return None
 
 
 def get_list_of_news():
@@ -57,8 +61,12 @@ def get_list_of_news():
       "page": "1"
     }
     log.info(f"Send request to get top-headlines news.\nParams: {params}\n\n")
-    res = requests.get(url=newsApi_url+'top-headlines', params=urllib.parse.urlencode(params))
-    # Ejecting url and title of random news
-    news_list = res.json().get('articles')
-    log.info(f"{res.json().get('articles').__len__()} articles has been found:\n\n{res.json().get('articles')}\n\n")
-    return news_list
+    try:
+        res = requests.get(url=newsApi_url+'top-headlines', params=urllib.parse.urlencode(params))
+        # Ejecting url and title of random news
+        news_list = res.json().get('articles')
+        log.info(f"{res.json().get('articles').__len__()} articles has been found:\n\n{res.json().get('articles')}\n\n")
+        return news_list
+    except Exception as e:
+        log.error(f"FAIL {e}")
+        return None
