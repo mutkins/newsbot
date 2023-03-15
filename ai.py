@@ -1,24 +1,7 @@
 import os
-from operator import itemgetter
-import datetime
-import time
 import logging
-import sys
-import base64
 from dotenv import load_dotenv
-import pytz
-import requests
 import openai
-import random
-from googletrans import Translator
-import urllib.parse
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import InputFile
-import aioschedule
-import asyncio
-import time
-import re
-import random
 
 
 # Configure logging
@@ -36,6 +19,7 @@ API_TOKEN = os.environ.get('tgBot_id')
 
 def get_opinion_about_news(title):
     # Getting GPT opinion about news
+    log.info(f"\nSend request to make neuro news.\nTitle: {title}\n\n")
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=f"Ты - ведущий новостей. Придумай смешную нелепую новость с этим заголовком {title}. Опиши время и место. Придумай шутку. Можешь писать грубо",
@@ -50,11 +34,12 @@ def get_opinion_about_news(title):
         presence_penalty=0
     )
     print(response['choices'][0]['text'])
+    log.info(f"\nNeuro news title: {response['choices'][0]['text']}\n\n")
     return response['choices'][0]['text']
 
 
 def choose_the_best_news(titles_string):
-
+    log.info(f"\nSend request to choose the best news.\nTitles: {titles_string}\n\n")
     # make GPT choose tho most funny news
     response = openai.Completion.create(
         model="text-davinci-003",
@@ -66,14 +51,22 @@ def choose_the_best_news(titles_string):
         presence_penalty=0
     )
     print(response['choices'][0]['text'])
+    log.info(f"\nChosen news title: {response['choices'][0]['text']}\n\n")
     return response['choices'][0]['text']
 
 
 def get_image_url_from_title(title):
     # making image for news
-    response = openai.Image.create(
-        prompt=title,
-        n=1,
-        size="512x512"
-    )
-    return response['data'][0]['url']
+    log.info(f"\nSend request to make an image from title:: {title}\n\n")
+    try:
+        response = openai.Image.create(
+            prompt=title,
+            n=1,
+            size="512x512"
+        )
+        log.info(f"\nSuccess, url of image: {response['data'][0]['url']}\n\n")
+        return response['data'][0]['url']
+    except Exception as e:
+        log.info(f"\nERROR {e}\n\n")
+        return None
+

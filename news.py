@@ -33,7 +33,7 @@ def get_title_of_random_news():
       "pageSize": "100",
       "page": "1"
     }
-
+    log.info(f"\nSend request to get usually news.\nParams: {params}\n\n")
     res = requests.get(url=newsApi_url+'everything', params=urllib.parse.urlencode(params))
     # Counting news in response and choosing random news
     countOfNews = len(res.json().get('articles'))
@@ -42,7 +42,7 @@ def get_title_of_random_news():
     urlNews = res.json().get('articles')[numberNews]['url']
     titleNewsRu = res.json().get('articles')[numberNews]['title']
     print(urlNews, titleNewsRu)
-    # log.info(f"ARTICLES: {res.json().get('articles')}\n\n titleNewsRu: {titleNewsRu}\n urlNews:{urlNews}")
+    log.info(f"ARTICLES: {res.json().get('articles')}\n\n Chosen random title: {titleNewsRu}\n urlNews:{urlNews}")
     return titleNewsRu
 
 
@@ -56,7 +56,7 @@ def get_list_of_news():
       "pageSize": "100",
       "page": "1"
     }
-
+    log.info(f"\nSend request to get top-headlines news.\nParams: {params}\n\n")
     res = requests.get(url=newsApi_url+'top-headlines', params=urllib.parse.urlencode(params))
     # Ejecting url and title of random news
     news_list = res.json().get('articles')

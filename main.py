@@ -41,7 +41,7 @@ async def send_welcome(message: types.Message):
 
 
 @dp.message_handler(commands=['neuroNews'])
-async def add_members(message: types.Message):
+async def neuro_news(message: types.Message):
     """
     This handler will be called when user sends `/news`
     """
@@ -59,7 +59,7 @@ async def add_members(message: types.Message):
 
 
 @dp.message_handler(commands=['topNews'])
-async def add_members(message: types.Message):
+async def top_news(message: types.Message):
     """
     This handler will be called when user sends `/news`
     """
@@ -90,12 +90,11 @@ async def add_members(message: types.Message):
     image_url = ai.get_image_url_from_title(top_news_title)
 
     # Sending message to telegram bot
-    await message.answer_photo(photo=image_url, parse_mode="HTML", caption=f'<b>{top_news_title}</b>\n'
-                                                                           f'<a href="{top_news_url}">подробнее</a>')
-
-@dp.message_handler(commands=['helloBot'])
-async def add_members(message: types.Message):
-    await message.answer(text="/m2m Привет, бот!")
+    if image_url:
+        await message.answer_photo(photo=image_url, parse_mode="HTML", caption=f'<b>{top_news_title}</b>\n'
+                                                                               f'<a href="{top_news_url}">подробнее</a>')
+    else:
+        await message.answer(text=f'<b>{top_news_title}</b>\n<a href="{top_news_url}">подробнее</a>',parse_mode="HTML")
 
 
 async def send_wishes():
@@ -103,7 +102,7 @@ async def send_wishes():
 
 
 async def scheduler():
-    aioschedule.every(20).seconds.do(send_wishes)
+    aioschedule.every(60).seconds.do(send_wishes)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
