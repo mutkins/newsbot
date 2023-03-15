@@ -42,7 +42,7 @@ def get_title_of_random_news():
     urlNews = res.json().get('articles')[numberNews]['url']
     titleNewsRu = res.json().get('articles')[numberNews]['title']
     print(urlNews, titleNewsRu)
-    log.info(f"ARTICLES: {res.json().get('articles')}\n\n titleNewsRu: {titleNewsRu}\n urlNews:{urlNews}")
+    # log.info(f"ARTICLES: {res.json().get('articles')}\n\n titleNewsRu: {titleNewsRu}\n urlNews:{urlNews}")
     return titleNewsRu
 
 
