@@ -18,7 +18,7 @@ log = logging.getLogger("main")
 
 load_dotenv()
 chat_id = os.environ.get('chat_id')
-openai.api_key = os.environ.get('openai.api_key')
+openai.api_key = os.environ.get('openai_api_key')
 tgBot_url = os.environ.get('tgBot_url')
 newsApi_url = os.environ.get('newsApi_url')
 API_TOKEN = os.environ.get('tgBot_id')
