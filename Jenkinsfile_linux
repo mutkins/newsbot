@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+       stage('get python and modules'){
+            steps {
+                sh 'apt-get install python 3.10'
+                   }
+        }
        stage('runZtool'){
             steps {
                 sh 'python3 main.py'
