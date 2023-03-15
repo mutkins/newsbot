@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-       stage('get python and modules'){
+       stage('get dependencies'){
             steps {
                 sh 'sudo python3 -m venv ./venv'
                 sh '. venv/bin/activate'
