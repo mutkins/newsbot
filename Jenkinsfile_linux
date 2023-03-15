@@ -1,10 +1,6 @@
 pipeline {
     agent any
     environment {
-                tgBot_id = credentials('tgBot_id')
-                openai.api_key = credentials('openai.api_key')
-                newsApi_key = credentials('newsApi_key')
-                newsApi_url = credentials('newsApi_url')
             }
     stages {
        stage('runZtool'){
