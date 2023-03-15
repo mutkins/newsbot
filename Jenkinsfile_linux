@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    environment {
+       tgBot_id = credentials('tgBot_id')
+       openai.api_key = credentials('openai.api_key')
+       newsApi_key = credentials('newsApi_key')
+       newsApi_url = credentials('newsApi_url')
+    }
+
     stages {
        stage('get python and modules'){
             steps {
@@ -9,8 +16,10 @@ pipeline {
                 sh 'pip install -r requirements.txt'
                    }
         }
-       stage('runZtool'){
+       stage('runBot'){
             steps {
+                sh 'echo HELLO'
+                sh 'echo ${tgBot_id}'
                 sh 'python3 main.py'
                    }
         }
