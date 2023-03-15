@@ -45,6 +45,7 @@ async def neuro_news(message: types.Message):
     """
     This handler will be called when user sends `/news`
     """
+    log.debug("neuroNews handler\n\n")
     await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
     titleNews = news.get_title_of_random_news()
 
@@ -63,6 +64,7 @@ async def top_news(message: types.Message):
     """
     This handler will be called when user sends `/news`
     """
+    log.debug("topNews handler\n\n")
     await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
 
     # Ask newsapi about top news
