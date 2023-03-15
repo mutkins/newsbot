@@ -60,5 +60,5 @@ def get_list_of_news():
     res = requests.get(url=newsApi_url+'top-headlines', params=urllib.parse.urlencode(params))
     # Ejecting url and title of random news
     news_list = res.json().get('articles')
-    log.info(f"ARTICLES: {res.json().get('articles')}")
+    log.info(f"{res.json().get('articles').__len__()} articles has been found:\n\n{res.json().get('articles')}\n\n")
     return news_list
