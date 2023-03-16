@@ -50,7 +50,9 @@ async def neuro_news(message: types.Message):
     titleNews = news.get_title_of_random_news()
 
     # Getting GPT opinion about news
-    gpt_opinion = ai.get_opinion_about_news(titleNews)
+    gpt_opinion = ai.ask_chatGPT(
+        prompt=f"Ты - ведущий новостей. Придумай смешную нелепую новость с этим заголовком {titleNews}."
+               f" Опиши время и место. Придумай шутку. Можешь писать грубо")
 
     # making image for news
     image_url = ai.get_image_url_from_title(titleNews)
@@ -72,31 +74,52 @@ async def top_news(message: types.Message):
 
     # Making a string with titles
     titles_string = ""
-    for i in news_list:
-        if not tools.is_string_exist_in_list(i['title'], sent_news_list):
-            titles_string = titles_string + '"' + i['title'] + '",'
+    for item in news_list:
+        if not tools.is_string_exist_in_list(item['title'], sent_news_list):
+            titles_string = titles_string + '"' + item['title'] + '",'
             if titles_string.__len__() > 3000:
                 break
 
     # Ask GPT to choose the most funny news
-    top_news_title = ai.choose_the_best_news(titles_string)
+    top_news_title = ai.ask_chatGPT(prompt=f"Выбери самую забавную и смешную новость из списка: {titles_string}")
+
     sent_news_list.append(top_news_title)
     print(sent_news_list)
+
     # find url of top news
     top_news_url = ""
-    for i in news_list:
-        if tools.is_string_equal(top_news_title, i['title']):
-            top_news_url = i['url']
+    for item in news_list:
+        if tools.is_string_equal(top_news_title, item['title']):
+            top_news_url = item['url']
+            break
+
+    log.debug(f"Top news title = {top_news_title}, Top news url = {top_news_url}\n\n")
+    # Get original url of news (not googlenews)
+    log.debug(f"Converting topnewsurl to original")
+    top_news_url = tools.get_original_url_of_news(top_news_url)
+    log.debug(f"Top news title = {top_news_title}, Top news url = {top_news_url}\n\n")
 
     # making image for news
-    image_url = ai.get_image_url_from_title(top_news_title)
+    # image_url = ai.get_image_url_from_title(top_news_title)
 
     # Sending message to telegram bot
-    if image_url:
-        await message.answer_photo(photo=image_url, parse_mode="HTML", caption=f'<b>{top_news_title}</b>\n'
-                                                                               f'<a href="{top_news_url}">подробнее</a>')
-    else:
-        await message.answer(text=f'<b>{top_news_title}</b>\n<a href="{top_news_url}">подробнее</a>',parse_mode="HTML")
+    # if image_url:
+    #     await message.answer_photo(photo=image_url, parse_mode="HTML", caption=f'<b>{top_news_title}</b>\n'
+    #                                                                        f'<a href="{top_news_url}">подробнее</a>')
+    # else:
+    await message.answer(text=f'<b>{top_news_title}</b>\n<a href="{top_news_url}">подробнее</a>',parse_mode="HTML")
+
+
+@dp.message_handler(commands=['what'])
+async def argument(message: types.Message):
+    """
+    This handler will be called when user sends `/news`
+    """
+    log.debug("argument handler\n\n")
+    await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
+    gpt_argument = ai.ask_chatGPT(prompt=f"{message.reply_to_message.text} {message.get_args()}?")
+    # Sending message to telegram bot
+    await message.reply(text=gpt_argument)
 
 
 async def send_wishes():

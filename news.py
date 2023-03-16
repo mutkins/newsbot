@@ -57,7 +57,7 @@ def get_list_of_news():
       "q": "",
       "apiKey": os.environ.get('newsApi_key'),
       "sources": "",
-      "pageSize": "100",
+      "pageSize": "50",
       "page": "1"
     }
     log.info(f"Send request to get top-headlines news.\nParams: {params}\n\n")
