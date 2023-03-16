@@ -37,7 +37,8 @@ async def send_welcome(message: types.Message):
     """
     await message.reply("Артемий Курицын - самое независимое СМИ в мире. Уникальный взгляд по всем вопросам.\n"
                         "Чтобы получить нейроновость - /neuroNews\n"
-                        "Чтобы получить самую интересную настоящую новость - /topNews")
+                        "Чтобы получить самую интересную настоящую новость - /topNews\n"
+                        "Поболтать - /blabla Привет, бот!")
 
 
 @dp.message_handler(commands=['neuroNews'])
@@ -46,7 +47,7 @@ async def neuro_news(message: types.Message):
     This handler will be called when user sends `/news`
     """
     log.debug("neuroNews handler\n\n")
-    await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
+    await message.reply(f"Спасибо за обращение. Ваш запрос в очереди - {random.randrange(9999)}, ожидайте")
     titleNews = news.get_title_of_random_news()
 
     # Getting GPT opinion about news
@@ -67,7 +68,7 @@ async def top_news(message: types.Message):
     This handler will be called when user sends `/news`
     """
     log.debug("topNews handler\n\n")
-    await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
+    await message.reply(f"Спасибо за обращение. Ваш запрос в очереди - {random.randrange(9999)}, ожидайте")
 
     # Ask newsapi about top news
     news_list = news.get_list_of_news()
@@ -99,27 +100,32 @@ async def top_news(message: types.Message):
     top_news_url = tools.get_original_url_of_news(top_news_url)
     log.debug(f"Top news title = {top_news_title}, Top news url = {top_news_url}\n\n")
 
-    # making image for news
-    # image_url = ai.get_image_url_from_title(top_news_title)
-
-    # Sending message to telegram bot
-    # if image_url:
-    #     await message.answer_photo(photo=image_url, parse_mode="HTML", caption=f'<b>{top_news_title}</b>\n'
-    #                                                                        f'<a href="{top_news_url}">подробнее</a>')
-    # else:
     await message.answer(text=f'<b>{top_news_title}</b>\n<a href="{top_news_url}">подробнее</a>',parse_mode="HTML")
 
 
-@dp.message_handler(commands=['what'])
-async def argument(message: types.Message):
+@dp.message_handler(commands=['blabla'])
+async def talking(message: types.Message):
     """
-    This handler will be called when user sends `/news`
+    This handler will be called when user sends blabla
     """
-    log.debug("argument handler\n\n")
-    await message.reply(f"Спасибо за обращение. Вас запрос в очереди - {random.randrange(9999)}, ожидайте")
-    gpt_argument = ai.ask_chatGPT(prompt=f"{message.reply_to_message.text} {message.get_args()}?")
-    # Sending message to telegram bot
-    await message.reply(text=gpt_argument)
+    log.debug("blabla handler\n\n")
+    if message.get_args():
+        gpt_answer = ai.ask_chatGPT(prompt=f"{message.get_args()}")
+        # Sending message to telegram bot
+        await message.reply(text=gpt_answer)
+
+
+@dp.message_handler()
+async def replying(message: types.Message):
+    """
+    This handler will be called when user sends other
+    """
+    log.debug("replying handler\n\n")
+    if message.reply_to_message:
+        gpt_answer = ai.ask_chatGPT(prompt=f"Context: '{message.reply_to_message.text}'. "
+                                           f"My question: '{message.get_args()}'?")
+        # Sending message to telegram bot
+        await message.reply(text=gpt_answer)
 
 
 async def send_wishes():
